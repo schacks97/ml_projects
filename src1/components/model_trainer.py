@@ -31,7 +31,6 @@ class ModelTrainer:
 
     def initiate_model_trainer(self, train_array, test_array):
         try:
-
             logging.info("Split training and test input data")
             X_train, y_train, X_test, y_test = (
                 train_array[:, :-1],
@@ -39,7 +38,6 @@ class ModelTrainer:
                 test_array[:, :-1],
                 test_array[:, -1]
             )
-
             models = {
                 "Random Forest": RandomForestRegressor(),
                 "Decision Tree": DecisionTreeRegressor(),
@@ -49,7 +47,6 @@ class ModelTrainer:
                 "CatBoosting Regressor": CatBoostRegressor(verbose=False),
                 "AdaBoost Regressor": AdaBoostRegressor(),
             }
-
             params = {
                 "Decision Tree": {
                     'criterion': ['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
@@ -99,15 +96,12 @@ class ModelTrainer:
             best_model_name = list(model_report.keys())[
                 list(model_report.values()).index(best_model_score)
             ]
-
             best_model = models[best_model_name]
+
             if best_model_score < 0.6:
                 raise CustomException("No best model found")
+            logging.info(f"Best found model on both training and testing dataset")
 
-            logging.info(f"Best found model on both training and testing dataset is {best_model_name}")
-
-
-            ##save the best model in pickle formet
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
@@ -117,6 +111,10 @@ class ModelTrainer:
 
             r2_square = r2_score(y_test, predicted)
             return r2_square
+
+
+
+
 
         except Exception as e:
             raise CustomException(e, sys)
